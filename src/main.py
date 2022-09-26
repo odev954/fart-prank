@@ -3,12 +3,17 @@ import sys
 import os
 from winevt import EventLog
 from WinCodes import SW, ERROR
+from AudioPlayer import AudioPlayer
+
+directory = os.path.dirname(__file__)
+
+PLAYER = AudioPlayer(directory + '/audios')
 
 def handle_event(action, context_pointer, event):
     """
     handler for windows event.
     """
-    print("Got event: " + str(event))
+    PLAYER.play_next()
 
 def bootstrap():
     """
@@ -18,7 +23,7 @@ def bootstrap():
         main()
     else:
         hinstance = ctypes.windll.shell32.ShellExecuteW(
-            None, 'runas', sys.executable, sys.argv[0], None, SW.SHOWNORMAL
+            None, 'runas', sys.executable, sys.argv[0], None, SW.HIDE
         )
         if hinstance <= 32:
             raise RuntimeError(ERROR(hinstance))
